@@ -1,23 +1,41 @@
 class Solution {
-    public List<String> generateParenthesis(int n) {
-        List<String> res = new ArrayList<String>();
-        recurse(res, 0, 0, "", n);
-        return res;
-    }
+    List<String> res = new ArrayList<>();
     
-    public void recurse(List<String> res, int left, int right, String s, int n) {
-        if (left == n && right == n) {
-            res.add(s);
+    public List<String> generateParenthesis(int n) {
+        StringBuilder curr = new StringBuilder();
+        
+        solve(curr,n);
+        return res;
+        
+    }
+
+    private void solve(StringBuilder curr, int n){
+        if(curr.length() == 2*n){
+            if(isValid(curr)){
+                res.add(curr.toString());
+            }
             return;
         }
-        
-        if (left < n) {
-            recurse(res, left + 1, right, s + "(", n);
-        }
-        
-        if (right < left) {
-            recurse(res, left, right + 1, s + ")", n);
-        }
+
+        curr.append('(');
+        solve(curr,n);
+
+        curr.deleteCharAt(curr.length()-1);
+
+        curr.append(')');
+        solve(curr,n);
+        curr.deleteCharAt(curr.length() - 1);
+
     }
-	
+
+    private boolean isValid(StringBuilder curr){
+        int count = 0;
+        for(int i=0;i<curr.length();i++){
+            if(curr.charAt(i) == '(')  count++;
+            else count--;
+            if(count < 0) return false;
+        }
+
+        return count == 0;
+    }
 }
