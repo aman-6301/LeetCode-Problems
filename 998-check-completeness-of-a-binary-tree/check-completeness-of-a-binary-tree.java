@@ -14,24 +14,23 @@
  * }
  */
 class Solution {
+    public int count(TreeNode root){
+        if(root == null) return 0;
+
+        return 1 + count(root.left) + count(root.right);
+    }
+
+    public boolean solve(TreeNode root,int i, int totalCount){
+        if(root == null) return true;
+        if(i > totalCount) return false;
+
+        return solve(root.left,2*i,totalCount) &&
+               solve(root.right,2*i+1,totalCount);
+    }
+    
     public boolean isCompleteTree(TreeNode root) {
-        boolean past = false;
-        Queue<TreeNode> q = new LinkedList<>();
-
-        q.offer(root);
-        while (!q.isEmpty()) {
-            TreeNode curr = q.poll();
-            if (curr == null) {
-                past = true;
-            } else {
-                if (past == true) {
-                    return false;
-                }
-
-                q.offer(curr.left);
-                q.offer(curr.right);
-            }
-        }
-        return true;
+        int totalCount = count(root);
+        int i=1;
+        return solve(root,i,totalCount);
     }
 }
