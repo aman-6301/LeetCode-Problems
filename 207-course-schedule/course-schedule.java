@@ -3,26 +3,29 @@ class Solution {
         List<List<Integer>> adj = new ArrayList<>();
         for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
 
-        for (int[] pre : prerequisites)
+        int[] indegree = new int[numCourses];
+        for (int[] pre : prerequisites) {
             adj.get(pre[1]).add(pre[0]);
+            indegree[pre[0]]++;
+        }
 
-        boolean[] vis = new boolean[numCourses];
-        boolean[] path = new boolean[numCourses];
-
-        for (int i = 0; i < numCourses; i++)
-            if (!vis[i] && dfs(i, adj, vis, path)) return false;
-
-        return true;
-    }
-
-    public boolean dfs(int node, List<List<Integer>> adj, boolean[] vis, boolean[] path) {
-        vis[node] = path[node] = true;
-
-        for (int next : adj.get(node))
-            if (!vis[next] && dfs(next, adj, vis, path)) return true;
-            else if (path[next]) return true;
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++){
+            if (indegree[i] == 0) q.add(i);
+        }
             
-        path[node] = false;
-        return false;
+
+        int count = 0;
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            count++;
+
+            for (int next : adj.get(node)) {
+                indegree[next]--;
+                if (indegree[next] == 0) q.add(next);
+            }
+        }
+
+        return count == numCourses;
     }
 }
